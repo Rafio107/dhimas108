@@ -1,6 +1,5 @@
 import streamlit as st
 from PIL import Image, ImageFilter
-import numpy as np
 
 def denoise_image_pillow(image):
     """
@@ -20,7 +19,8 @@ def main_page():
     col1, col2 = st.columns(2)
 
     with col1:
-        st.image("c:/MainStorageVault/Documents/Project/ImageRestore_Project/PresidentUniversityLogo.png")
+        # Gunakan URL atau pastikan path lokal bisa diakses
+        st.image("https://your-image-url.com/PresidentUniversityLogo.png")
 
     with col2:
         st.write("**Group Members:**")
@@ -37,8 +37,10 @@ def denoising_page():
     if uploaded_file is not None:
         image = Image.open(uploaded_file)
 
+        # Apply denoising using Pillow's Median Filter
         denoised_image = denoise_image_pillow(image)
 
+        # Display both original and denoised images
         st.image([image, denoised_image], caption=['Original Image', 'Denoised Image'], use_container_width=True)
 
 def about_page():
@@ -47,7 +49,8 @@ def about_page():
     col1, col2 = st.columns(2)
 
     with col1:
-        st.image("c:/MainStorageVault/Documents/Project/ImageRestore_Project/DenoiserEffect.png")  # Replace with your image path
+        # Gunakan URL atau pastikan path lokal bisa diakses
+        st.image("https://your-image-url.com/DenoiserEffect.png")
 
     with col2:
         st.write("**Image Denoising**")
