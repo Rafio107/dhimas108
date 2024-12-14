@@ -20,6 +20,8 @@ def main_page():
     col1, col2 = st.columns(2)
 
     with col1:
+        # Jika file gambar lokal tersedia, ganti path dengan lokasi file yang benar
+        # Pastikan untuk menggunakan path relatif atau file yang dapat diakses
         st.image("c:/MainStorageVault/Documents/Project/ImageRestore_Project/PresidentUniversityLogo.png")
 
     with col2:
@@ -32,16 +34,13 @@ def main_page():
 def denoising_page():
     st.title("Image Denoising with Pillow")
 
-    # Meminta pengguna untuk mengunggah file gambar
     uploaded_file = st.file_uploader("Choose an image file", type=["jpg", "png", "jpeg"])
 
     if uploaded_file is not None:
         image = Image.open(uploaded_file)
 
-        # Terapkan filter median untuk menghilangkan noise
         denoised_image = denoise_image_pillow(image)
 
-        # Tampilkan gambar asli dan yang sudah di-denoise
         st.image([image, denoised_image], caption=['Original Image', 'Denoised Image'], use_container_width=True)
 
 def about_page():
@@ -50,17 +49,20 @@ def about_page():
     col1, col2 = st.columns(2)
 
     with col1:
-        # Menggunakan gambar yang diunggah sebagai gambar statis
-        image_path = "/mnt/data/image.png"  # Lokasi gambar yang kamu unggah
-        image = Image.open(image_path)
-        st.image(image, caption="Denoiser Effect", use_column_width=True)
+        # Menggunakan file uploader untuk gambar
+        about_image = st.file_uploader("Upload an image for the about section", type=["jpg", "png", "jpeg"])
+
+        if about_image is not None:
+            image = Image.open(about_image)
+            st.image(image, caption="Denoiser Effect", use_column_width=True)
+        else:
+            st.write("Please upload an image to display.")
 
     with col2:
         st.write("**Image Denoising**")
         st.write("Image denoising is a technique used to reduce noise in images. Noise can be caused by various factors, such as sensor noise, transmission errors, or poor lighting conditions.")
         st.write("The **Median Filter** technique is one of the basic methods for image denoising. It works by applying a filter that preserves edges while reducing noise, making it suitable for basic denoising operations.")
 
-# Menentukan halaman berdasarkan pilihan di sidebar
 if __name__ == "__main__":
     page = st.sidebar.selectbox("Select a Page", ["1. Linear Algebra Project", "2. Image Transformation: Denoiser", "3. About Image Transformation"])
 
