@@ -20,7 +20,7 @@ def main_page():
     col1, col2 = st.columns(2)
 
     with col1:
-        # Replace the path with the correct path to your image
+        # Ganti jalur file dengan jalur yang bisa diakses oleh aplikasi
         st.image("c:/MainStorageVault/Documents/Project/ImageRestore_Project/PresidentUniversityLogo.png")
 
     with col2:
@@ -48,10 +48,12 @@ def about_page():
     col1, col2 = st.columns(2)
 
     with col1:
-        # Here we assume you're using a static image from a local file path
-        # Replace with the correct path to your static image
-        st.image("c:/MainStorageVault/Documents/Project/ImageRestore_Project/DenoiserEffect.png", 
-                 caption="Denoiser Effect", use_column_width=True)
+        # Pastikan jalur gambar relatif atau gambar sudah di-upload ke aplikasi
+        try:
+            st.image("c:/MainStorageVault/Documents/Project/ImageRestore_Project/DenoiserEffect.png", 
+                     caption="Denoiser Effect", use_container_width=True)
+        except Exception as e:
+            st.error(f"Error loading image: {e}")
 
     with col2:
         st.write("**Image Denoising**")
