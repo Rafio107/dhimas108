@@ -1,23 +1,18 @@
 import streamlit as st
-import cv2
+from PIL import Image, ImageFilter
 import numpy as np
 
-def denoise_nlm(img, h=10, templateWindowSize=7, searchWindowSize=21):
+def denoise_image_pillow(image):
     """
-    Applies Non-Local Means Denoising to an image.
-pip freeze > requirements.txt
+    Applies Median Filter for Denoising using Pillow.
+    
     Args:
-        img: Input image.
-        h: Parameter controlling the degree of filtering.
-        templateWindowSize: Size of the template window.
-        searchWindowSize: Size of the search window.
-
+        image: Input image (PIL format).
+        
     Returns:
-        Denoised image.
+        Denoised image (PIL format).
     """
-
-    dst = cv2.fastNlMeansDenoisingColored(img, None, h, templateWindowSize, searchWindowSize)
-    return dst
+    return image.filter(ImageFilter.MedianFilter(size=3))
 
 def main_page():
     st.title("Linear Algebra Group 2 Class 2 [2023]")
@@ -25,7 +20,7 @@ def main_page():
     col1, col2 = st.columns(2)
 
     with col1:
-        st.image("c:\MainStorageVault\Documents\Project\ImageRestore_Project\PresidentUniversityLogo.png")
+        st.image("c:/MainStorageVault/Documents/Project/ImageRestore_Project/PresidentUniversityLogo.png")
 
     with col2:
         st.write("**Group Members:**")
@@ -35,17 +30,16 @@ def main_page():
         st.write("- Pambudi Setyo Wicaksono")
 
 def denoising_page():
-    st.title("Image Denoising")
+    st.title("Image Denoising with Pillow")
 
     uploaded_file = st.file_uploader("Choose an image file", type=["jpg", "png", "jpeg"])
 
     if uploaded_file is not None:
-        file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
-        img = cv2.imdecode(file_bytes, 1)
+        image = Image.open(uploaded_file)
 
-        denoised_img = denoise_nlm(img)
+        denoised_image = denoise_image_pillow(image)
 
-        st.image([img, denoised_img], caption=['Original Image', 'Denoised Image'])
+        st.image([image, denoised_image], caption=['Original Image', 'Denoised Image'], use_container_width=True)
 
 def about_page():
     st.title("About Image Transformation: Denoiser")
@@ -53,12 +47,12 @@ def about_page():
     col1, col2 = st.columns(2)
 
     with col1:
-        st.image("c:\MainStorageVault\Documents\Project\ImageRestore_Project\DenoiserEffect.png")  # Replace with your image path
+        st.image("c:/MainStorageVault/Documents/Project/ImageRestore_Project/DenoiserEffect.png")  # Replace with your image path
 
     with col2:
         st.write("**Image Denoising**")
         st.write("Image denoising is a technique used to reduce noise in images. Noise can be caused by various factors, such as sensor noise, transmission errors, or poor lighting conditions.")
-        st.write("The **Non-Local Means (NLM)** algorithm is a popular technique for image denoising. It works by comparing a pixel with its similar neighbors in a larger search window. It then averages the values of these similar pixels to estimate the true value of the noisy pixel.")
+        st.write("The **Median Filter** technique is one of the basic methods for image denoising. It works by applying a filter that preserves edges while reducing noise, making it suitable for basic denoising operations.")
 
 if __name__ == "__main__":
     page = st.sidebar.selectbox("Select a Page", ["1. Linear Algebra Project", "2. Image Transformation: Denoiser", "3. About Image Transformation"])
