@@ -20,7 +20,7 @@ def main_page():
     col1, col2 = st.columns(2)
 
     with col1:
-        # Ganti jalur file dengan jalur yang bisa diakses oleh aplikasi
+        # Replace the path with the correct path to your image
         st.image("c:/MainStorageVault/Documents/Project/ImageRestore_Project/PresidentUniversityLogo.png")
 
     with col2:
@@ -48,12 +48,12 @@ def about_page():
     col1, col2 = st.columns(2)
 
     with col1:
-        # Pastikan jalur gambar relatif atau gambar sudah di-upload ke aplikasi
-        try:
-            st.image("c:/MainStorageVault/Documents/Project/ImageRestore_Project/DenoiserEffect.png", 
-                     caption="Denoiser Effect", use_container_width=True)
-        except Exception as e:
-            st.error(f"Error loading image: {e}")
+        # Allow user to upload an image for the Denoiser Effect
+        uploaded_image = st.file_uploader("Upload an image for Denoiser Effect", type=["png", "jpg", "jpeg"])
+
+        if uploaded_image is not None:
+            image = Image.open(uploaded_image)
+            st.image(image, caption="Denoiser Effect", use_container_width=True)
 
     with col2:
         st.write("**Image Denoising**")
