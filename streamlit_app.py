@@ -52,12 +52,13 @@ def about_page():
     col1, col2 = st.columns(2)
 
     with col1:
-        # Allow user to upload an image for the Denoiser Effect
-        uploaded_image = st.file_uploader("Upload an image for Denoiser Effect", type=["png", "jpg", "jpeg"])
-
-        if uploaded_image is not None:
-            image = Image.open(uploaded_image)
-            st.image(image, caption="Denoiser Effect", use_container_width=True)
+        # Load the static DenoiserEffect.png from a file path
+        try:
+            # Gambar statis DenoiserEffect.png
+            image_path = "DenoiserEffect.png"  # Pastikan gambar ini berada dalam folder yang sama dengan file kode
+            st.image(image_path, caption="Denoiser Effect", use_container_width=True)
+        except Exception as e:
+            st.error(f"Error loading image: {e}")
 
     with col2:
         st.write("**Image Denoising**")
