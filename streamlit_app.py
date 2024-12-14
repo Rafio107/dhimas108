@@ -20,8 +20,7 @@ def main_page():
     col1, col2 = st.columns(2)
 
     with col1:
-        # Jika file gambar lokal tersedia, ganti path dengan lokasi file yang benar
-        # Pastikan untuk menggunakan path relatif atau file yang dapat diakses
+        # Replace the path with the correct path to your image
         st.image("c:/MainStorageVault/Documents/Project/ImageRestore_Project/PresidentUniversityLogo.png")
 
     with col2:
@@ -49,14 +48,10 @@ def about_page():
     col1, col2 = st.columns(2)
 
     with col1:
-        # Menggunakan file uploader untuk gambar
-        about_image = st.file_uploader("Upload an image for the about section", type=["jpg", "png", "jpeg"])
-
-        if about_image is not None:
-            image = Image.open(about_image)
-            st.image(image, caption="Denoiser Effect", use_column_width=True)
-        else:
-            st.write("Please upload an image to display.")
+        # Here we assume you're using a static image from a local file path
+        # Replace with the correct path to your static image
+        st.image("c:/MainStorageVault/Documents/Project/ImageRestore_Project/DenoiserEffect.png", 
+                 caption="Denoiser Effect", use_column_width=True)
 
     with col2:
         st.write("**Image Denoising**")
