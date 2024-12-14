@@ -1,6 +1,6 @@
 import streamlit as st
 from PIL import Image, ImageFilter
-import numpy as np
+import os
 
 def denoise_image_pillow(image):
     """
@@ -20,8 +20,12 @@ def main_page():
     col1, col2 = st.columns(2)
 
     with col1:
-        # Replace the path with the correct path to your image
-        st.image("c:/MainStorageVault/Documents/Project/ImageRestore_Project/PresidentUniversityLogo.png")
+        try:
+            # Coba untuk menggunakan jalur relatif untuk gambar
+            image_path = "images/PresidentUniversityLogo.png"  # Gambar ini harus ada di dalam folder 'images'
+            st.image(image_path, caption="President University Logo", use_container_width=True)
+        except Exception as e:
+            st.error(f"Error loading image: {e}")
 
     with col2:
         st.write("**Group Members:**")
