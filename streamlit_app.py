@@ -1,76 +1,107 @@
 import streamlit as st
-from PIL import Image, ImageFilter
-import os
+from PIL import Image
+import io
 
-def denoise_image_pillow(image):
-    """
-    Applies Median Filter for Denoising using Pillow.
+# Fungsi untuk memeriksa format file yang diperbolehkan
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+# Fungsi untuk mengompres gambar
+def compress_image(image, quality=50):
+    img = Image.open(image)
     
-    Args:
-        image: Input image (PIL format).
-        
-    Returns:
-        Denoised image (PIL format).
-    """
-    return image.filter(ImageFilter.MedianFilter(size=3))
+    # Convert image to JPEG format if it is not already JPEG
+    if img.mode in ("RGBA", "P"):  # Convert png with transparency to RGB
+        img = img.convert("RGB")
+    
+    compressed_image = io.BytesIO()  # Buffer untuk gambar terkompresi
+    img.save(compressed_image, format="JPEG", optimize=True, quality=quality)
+    compressed_image.seek(0)  # Kembali ke posisi awal setelah menulis
+    return compressed_image
 
-def main_page():
-    st.title("Linear Algebra Group 2 Class 2 [2023]")
+# CSS untuk tampilan custom di Streamlit
+def custom_css():
+    st.markdown("""
+    <style>
+    body {
+        font-family: 'Courier New', Courier, monospace;
+        background-color: #1e1e2f;
+        color: #fff;
+        margin: 0;
+        text-align: center;
+        padding: 50px;
+        image-rendering: pixelated;
+    }
+    .container {
+        display: inline-block;
+        background: #3a3a5a;
+        border: 4px solid #0056b3;
+        box-shadow: 4px 4px #003366;
+        padding: 30px;
+        border-radius: 8px;
+        width: 300px;
+    }
+    h1 {
+        color: #66a3ff;
+        font-size: 32px;
+        text-transform: uppercase;
+    }
+    p {
+        color: #cce6ff;
+    }
+    .btn {
+        font-size: 20px;
+        background-color: #0056b3;
+        color: #ffffff;
+        padding: 10px 20px;
+        border: 2px solid #003366;
+        border-radius: 4px;
+        text-decoration: none;
+        cursor: pointer;
+        box-shadow: 2px 2px #003366;
+        display: block;
+        margin: 10px auto;
+    }
+    .btn:hover {
+        background-color: #66a3ff;
+    }
+    input[type="file"] {
+        display: block;
+        margin: 20px auto;
+        padding: 5px;
+        border: 2px dashed #66a3ff;
+        background-color: #3a3a5a;
+        color: #cce6ff;
+        width: 80%;
+        text-align: center;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
-    col1, col2 = st.columns(2)
+# Main Streamlit App
+def main():
+    st.title("Pixel Compress")
+    st.write("Compress your photos in a pixelated style!")
 
-    with col1:
-        try:
-            # Coba untuk menggunakan jalur relatif untuk gambar
-            image_path = "PresidentUniversityLogo.png"  # Gambar ini harus ada di dalam folder 'images'
-            st.image(image_path, caption="President University Logo", use_container_width=True)
-        except Exception as e:
-            st.error(f"Error loading image: {e}")
+    # Mengupload gambar
+    uploaded_file = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg", "gif"])
 
-    with col2:
-        st.write("**Group Members:**")
-        st.write("- Achmad Ridho Raziqin Ahsit")
-        st.write("- Dhimas Ariyanto")
-        st.write("- Muhammad Isfan Nabil Hanif")
-        st.write("- Pambudi Setyo Wicaksono")
+    # Jika file diupload dan formatnya diperbolehkan
+    if uploaded_file is not None and allowed_file(uploaded_file.name):
+        # Tampilkan gambar yang diupload
+        st.image(uploaded_file, caption="Uploaded Image", use_column_width=True)
 
-def denoising_page():
-    st.title("Image Denoising with Pillow")
+        # Kompres gambar
+        if st.button("Compress Image"):
+            with st.spinner("Compressing..."):
+                compressed_img = compress_image(uploaded_file)
 
-    uploaded_file = st.file_uploader("Choose an image file", type=["jpg", "png", "jpeg"])
+                # Tampilkan gambar hasil kompresi
+                st.image(compressed_img, caption="Compressed Image", use_column_width=True)
 
-    if uploaded_file is not None:
-        image = Image.open(uploaded_file)
-
-        denoised_image = denoise_image_pillow(image)
-
-        st.image([image, denoised_image], caption=['Original Image', 'Denoised Image'], use_container_width=True)
-
-def about_page():
-    st.title("About Image Transformation: Denoiser")
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        # Load the static DenoiserEffect.png from a file path
-        try:
-            # Gambar statis DenoiserEffect.png
-            image_path = "DenoiserEffect.png"  # Pastikan gambar ini berada dalam folder yang sama dengan file kode
-            st.image(image_path, caption="Denoiser Effect", use_container_width=True)
-        except Exception as e:
-            st.error(f"Error loading image: {e}")
-
-    with col2:
-        st.write("**Image Denoising**")
-        st.write("Image denoising is a technique used to reduce noise in images. Noise can be caused by various factors, such as sensor noise, transmission errors, or poor lighting conditions.")
-        st.write("The **Median Filter** technique is one of the basic methods for image denoising. It works by applying a filter that preserves edges while reducing noise, making it suitable for basic denoising operations.")
-
-if __name__ == "__main__":
-    page = st.sidebar.selectbox("Select a Page", ["1. Linear Algebra Project", "2. Image Transformation: Denoiser", "3. About Image Transformation"])
-
-    if page == "1. Linear Algebra Project":
-        main_page()
-    elif page == "2. Image Transformation: Denoiser":
-        denoising_page()
-    elif page == "3. About Image Transformation":
-        about_page()
+                # Tombol untuk mendownload gambar terkompresi
+                st.download_button(
+                    label="Download Compressed Image",
+                   
