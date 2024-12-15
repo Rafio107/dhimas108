@@ -104,4 +104,11 @@ def main():
                 # Tombol untuk mendownload gambar terkompresi
                 st.download_button(
                     label="Download Compressed Image",
-                   
+                    data=compressed_img,
+                    file_name="compressed_image.jpg",
+                    mime="image/jpeg"
+                )
+
+if __name__ == "__main__":
+    custom_css()
+    main()
